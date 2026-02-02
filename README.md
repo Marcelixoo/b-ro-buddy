@@ -1,6 +1,12 @@
 # BüroBuddy
 
-Turns German letters (PDFs/photos) into **clear English insights + action points + deadlines**. Later: schedule in Google Calendar and triage from email.
+<p align="center">
+  <img src="logo.png" alt="BüroBuddy" width="280"/>
+</p>
+
+<p align="center">
+  Turns German letters (PDFs/photos) into <strong>clear English insights + action points + deadlines</strong>. Later: schedule in Google Calendar and triage from email.
+</p>
 
 ## Quick start
 
