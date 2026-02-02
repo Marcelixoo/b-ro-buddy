@@ -1,0 +1,11 @@
+# Only used when building web (context is repo root)
+node_modules
+.next
+apps/web/.next
+*.log
+.git
+apps/api
+.env
+.env.*
+*.md
+!apps/web/README.md

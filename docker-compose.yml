@@ -1,0 +1,37 @@
+# BüroBuddy — one-command run: API + Web
+# Usage: docker compose up --build
+# Then: http://localhost:3000 (app), http://localhost:8000/docs (API)
+
+services:
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    env_file:
+      - ./apps/api/.env
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./data/burobuddy.db
+      - UPLOAD_DIR=/app/uploads
+      - DATA_DIR=/app/data
+      - CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+    volumes:
+      - api_uploads:/app/uploads
+      - api_data:/app/data
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8001
+      - API_URL_INTERNAL=http://api:8000
+    depends_on:
+      - api
+
+volumes:
+  api_uploads:
+  api_data:

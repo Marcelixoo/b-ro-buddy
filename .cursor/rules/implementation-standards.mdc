@@ -1,0 +1,56 @@
+---
+description: Implementation standards for BüroBuddy — code style, types, tests, tooling
+alwaysApply: true
+---
+
+# BüroBuddy implementation standards
+
+Repository: monorepo with `apps/api` (FastAPI, Python 3.11+, uv), `apps/web` (Next.js, pnpm), `packages/shared` (TypeScript schemas). Follow these rules for all new or changed code.
+
+## 1. No comments in generated code
+
+Do not add comments, docstrings, or block comments in code you generate. Prefer self-explanatory names and small functions. Remove existing comments when touching a file unless they are critical (e.g. license, env docs in README).
+
+## 2. Short and expressive
+
+Prefer short, readable code: small functions, clear names, early returns. Avoid long blocks, deep nesting, and redundant abstractions. One clear idea per function or component.
+
+## 3. Interfaces for external dependencies
+
+- **TypeScript/React**: Depend on interfaces (e.g. API client, fetch wrapper) rather than concrete implementations so they can be mocked or swapped. Inject or accept interfaces at boundaries (API layer, services).
+- **Python**: Use protocols or abstract base classes for external services (LLM client, storage, DB session factory) where multiple implementations exist; keep routes/schemas thin and call into these abstractions.
+
+## 4. Avoid many layers of indirection
+
+Prefer direct flow: route → service → DB/external. Do not add extra “manager”, “handler”, or “use-case” layers unless the domain clearly requires it. Keep the call stack shallow.
+
+## 5. Use types properly (no `any`)
+
+- **Python**: Use full type hints on public functions and module boundaries. Use `dict[str, T]`, specific Pydantic models, or TypedDict instead of `Any`. Run `pyright` or `ruff` type-checking where configured.
+- **TypeScript**: No `any`. Use `unknown` and narrow, or proper types/interfaces. Strict TypeScript; types on all function parameters and return values.
+
+## 6. Tests for important/hot paths
+
+Add tests that document behaviour of critical paths: document upload/flow, extract, analyze, chat, and key API responses. Prefer focused unit tests for services and integration-style tests for main routes. Place tests next to code or in a dedicated `tests/` dir; use pytest (API) and the project’s TS test runner (web). Tests are the primary documentation of “how this should behave”.
+
+## 7. Dependencies: uv and pnpm only
+
+- **Python (apps/api)**: Install and add dependencies with `uv` (e.g. `uv add <pkg>`, `uv sync`). Do not use `pip install` or `requirements.txt` for new deps; keep `pyproject.toml` as source of truth.
+- **JS/TS (root, apps/web, packages/shared)**: Use `pnpm` only. Run `pnpm add …`, `pnpm install`. Do not use `npm` or `yarn` for installs.
+
+## 8. Linting must pass after major changes
+
+After feature work or refactors, run the full lint suite and fix all issues before considering the change done. Do not leave lint errors or warnings on modified code.
+
+## 9. Run ruff and biome
+
+- **Python**: From repo root or `apps/api`, run `ruff check .` and `ruff format .`. Resolve all ruff errors and apply format. Ensure `pyproject.toml` includes a `[tool.ruff]` section so ruff runs consistently.
+- **TypeScript/React**: Run Biome for lint and format (e.g. `pnpm exec biome check .` or project script). Resolve all biome diagnostics. If the project still uses ESLint, keep it passing and migrate to biome where agreed.
+
+## Repo layout (for context)
+
+- `apps/api`: FastAPI app; `app/routes/`, `app/services/`, `app/schemas.py`, `app/models.py`, `app/config.py`, `app/database.py`. Entry: `main.py`.
+- `apps/web`: Next.js app; `src/app/` (pages, components), `src/lib/` (e.g. API client).
+- `packages/shared`: Shared TS types and Zod schemas; consumed by web and optionally by API docs.
+
+When adding features, align with this layout and the standards above.

@@ -1,0 +1,43 @@
+[project]
+name = "burobuddy-api"
+version = "0.1.0"
+description = "BüroBuddy API — document upload, extract, analyze, chat"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "python-multipart>=0.0.6",
+    "pypdf2>=3.0.0",
+    "pdf2image>=1.16.0",
+    "pillow>=10.0.0",
+    "pytesseract>=0.3.10",
+    "sqlalchemy>=2.0.0",
+    "aiosqlite>=0.19.0",
+    "asyncpg>=0.29.0",
+    "openai>=1.12.0",
+    "httpx>=0.26.0",
+    "boto3>=1.34.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[dependency-groups]
+dev = ["ruff>=0.8.0"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["."]
+exclude = [".venv", "__pycache__"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+ignore = ["B008"]
+[tool.ruff.lint.per-file-ignores]
+"app/services/analyze.py" = ["E501"]
+"app/services/chat.py" = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+

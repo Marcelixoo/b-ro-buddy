@@ -1,0 +1,22 @@
+{
+  "name": "burobuddy",
+  "private": true,
+  "description": "BüroBuddy — German letters to English insights + action points",
+  "packageManager": "pnpm@9.15.0",
+  "workspaces": ["apps/web", "packages/shared"],
+  "scripts": {
+    "dev": "pnpm run dev --filter web",
+    "dev:api": "cd apps/api && uv run uvicorn main:app --reload",
+    "dev:web": "pnpm run dev --filter web",
+    "build": "pnpm run build --filter @burobuddy/shared && pnpm run build --filter web",
+    "lint": "pnpm run lint:ruff && pnpm run lint:biome",
+    "lint:ruff": "cd apps/api && uv run ruff check . && uv run ruff format . && uv run ruff format --check .",
+    "lint:biome": "pnpm exec biome check ."
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
+  }
+}

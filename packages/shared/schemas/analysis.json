@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DocumentAnalysis",
+  "type": "object",
+  "required": [
+    "language_detected",
+    "summary_en",
+    "overall_risk",
+    "actions",
+    "deadlines",
+    "entities"
+  ],
+  "properties": {
+    "language_detected": { "type": "string" },
+    "summary_en": { "type": "string" },
+    "overall_risk": { "type": "string", "enum": ["low", "medium", "high"] },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "title_en",
+          "details_en",
+          "due_date",
+          "confidence",
+          "category",
+          "evidence"
+        ],
+        "properties": {
+          "title_en": { "type": "string" },
+          "details_en": { "type": "string" },
+          "due_date": {
+            "type": ["string", "null"],
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "category": {
+            "type": "string",
+            "enum": [
+              "payment",
+              "appointment",
+              "form",
+              "identity",
+              "insurance",
+              "tax",
+              "other"
+            ]
+          },
+          "evidence": {
+            "type": "object",
+            "required": ["quote_de"],
+            "properties": {
+              "quote_de": { "type": "string" },
+              "page": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "deadlines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "meaning_en", "confidence", "evidence"],
+        "properties": {
+          "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+          "meaning_en": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "evidence": {
+            "type": "object",
+            "required": ["quote_de"],
+            "properties": {
+              "quote_de": { "type": "string" },
+              "page": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "entities": {
+      "type": "object",
+      "properties": {
+        "sender": { "type": ["string", "null"] },
+        "amount_eur": { "type": ["number", "null"] },
+        "iban": { "type": ["string", "null"] },
+        "reference_number": { "type": ["string", "null"] },
+        "contact_phone": { "type": ["string", "null"] },
+        "address": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
